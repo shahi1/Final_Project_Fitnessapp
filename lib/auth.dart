@@ -81,6 +81,22 @@ class Auth with ChangeNotifier {
       throw error;
     }
   }
+	
+  Future<void> googlelogout() async {
+    final googleSignOut = GoogleSignIn();
+    _userId = null;
+    _token = null;
+    _expiryDate = null;
+    if (_authTimer != null) {
+      _authTimer.cancel();
+      _authTimer = null;
+    }
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+
+    await googleSignOut.disconnect();
+  }
 
   Future<void> login(String email, String password) async {
     const url =
